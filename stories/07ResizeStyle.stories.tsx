@@ -29,7 +29,7 @@ export const FluidPanes = () => {
                         <p>
                             Try sliding the right axis
                         </p>
-                    </div>                    
+                    </div>
                 </Pane>
                 <SplitPane sizes={sizes1}  onChange={setSizes1}>
                     <div style={{ ...layoutCSS, background: '#d5d7d9' }}>

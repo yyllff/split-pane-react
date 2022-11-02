@@ -3,10 +3,11 @@
 
 ## Features
 
-* Supports vertical & horizontal layouts.
-* Supports fluid pane.
-* Use controlled component mode, flexible use
-* Built in different themes
+- Supports vertical & horizontal layouts.
+- Supports fluid pane.
+- Use controlled component mode, flexible use
+- React16.8 version at least, and React18 version at the same time
+- Built in different themes
 
 ## Installing
 
@@ -21,44 +22,41 @@ yarn add split-pane-react
 ## Example Usage
 
 ```jsx
+import React, { useState } from 'react';
 import SplitPane, { Pane } from 'split-pane-react';
-import 'split-pane-react/esm/themes/default.css'
+import 'split-pane-react/esm/themes/default.css';
 
-function Basic () {
-    const [sizes, setSizes] = useState([
-        100,
-        '30%',
-        'auto',
-    ]);
+function App () {
+  const [sizes, setSizes] = useState([100, '30%', 'auto']);
 
-    const layoutCSS = {
-        height: '100%',
-        display: 'flex',
-        alignItems: 'center',
-        justifyContent: 'center',
-    };
+  const layoutCSS = {
+    height: '100%',
+    display: 'flex',
+    alignItems: 'center',
+    justifyContent: 'center'
+  };
 
-    return (
-        <div style={{ height: 500 }}>
-            <SplitPane
-                split='vertical'
-                sizes={sizes}
-                onChange={setSizes}
-            >
-                <Pane minSize={50} maxSize='50%'>
-                  <div style={{ ...layoutCSS, background: '#ddd' }}>
-                    pane1
-                  </div>
-                </Pane>
-                <div style={{ ...layoutCSS, background: '#d5d7d9' }}>
-                    pane2
-                </div>
-                <div style={{ ...layoutCSS, background: '#a1a5a9' }}>
-                    pane2
-                </div>
-            </SplitPane>
+  return (
+    <div style={{ height: 500 }}>
+      <SplitPane
+        split='vertical'
+        sizes={sizes}
+        onChange={setSizes}
+      >
+        <Pane minSize={50} maxSize='50%'>
+          <div style={{ ...layoutCSS, background: '#ddd' }}>
+            pane1
+          </div>
+        </Pane>
+        <div style={{ ...layoutCSS, background: '#d5d7d9' }}>
+          pane2
         </div>
-    );
+        <div style={{ ...layoutCSS, background: '#a1a5a9' }}>
+          pane3
+        </div>
+      </SplitPane>
+    </div>
+  );
 };
 ```
 
@@ -111,4 +109,4 @@ import 'split-pane-react/esm/themes/theme2.css';
 
 **[split-pane-react](https://github.com/yyllff/split-pane-react)** licensed under [MIT](LICENSE).
 
-> PS: I would love to know if you're using split-pane-react. If you have any use problems, you can raise the issue, and I will try my best to solve them.
+> PS: I would love to know if you're using split-pane-react. If you have any use problems, you can raise the issue, and I will repair them as soon as possible. This project will be maintained for a long time. If you have a good idea, you can propose a merge.

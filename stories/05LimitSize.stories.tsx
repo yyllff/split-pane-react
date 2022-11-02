@@ -27,7 +27,7 @@ export const MinSizeAndMaxSize = () => {
                         <p>Pane1</p>
                         <p>minSize: 100px</p>
                         <p>maxSize: 50%</p>
-                    </div>                    
+                    </div>
                 </Pane>
                 <div style={{ ...layoutCSS, background: '#d5d7d9' }}>
                     Pane2
