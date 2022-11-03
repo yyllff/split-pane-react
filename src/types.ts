@@ -1,6 +1,5 @@
 import React from 'react';
 
-
 export interface HTMLElementProps {
     title?: string;
     style?: React.CSSProperties;
@@ -11,6 +10,11 @@ export interface HTMLElementProps {
 export interface IAxis {
     x: number;
     y: number;
+}
+
+export interface ICacheSizes {
+    sizes: (string | number)[];
+    sashPosSizes: (string | number)[];
 }
 
 export interface ISplitProps extends HTMLElementProps {
@@ -32,9 +36,11 @@ export interface ISplitProps extends HTMLElementProps {
      */
     sizes: (string | number)[];
     onChange: (sizes: number[]) => void;
+    onDragStart?: (e: MouseEvent) => void;
+    onDragEnd?: (e: MouseEvent) => void;
     className?: string;
     sashClassName?: string;
-    paneClassName?: string;
+    performanceMode?: boolean;
     /**
      * Specify the size fo resizer
      *
@@ -45,7 +51,7 @@ export interface ISplitProps extends HTMLElementProps {
 
 export interface ISashProps {
     className?: string;
-    style: CSSProperties;
+    style: React.CSSProperties;
     onDragStart: React.MouseEventHandler<HTMLDivElement>;
     onDragging: React.MouseEventHandler<HTMLDivElement>;
     onDragEnd: React.MouseEventHandler<HTMLDivElement>;

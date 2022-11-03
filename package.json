@@ -1,6 +1,6 @@
 {
   "name": "split-pane-react",
-  "version": "0.1.0",
+  "version": "0.1.1",
   "description": "Resizable split panes for React.js.",
   "module": "./esm/index.js",
   "typings": "./esm/index.d.ts",

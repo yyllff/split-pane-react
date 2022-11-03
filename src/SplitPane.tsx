@@ -1,5 +1,5 @@
 import React, { useEffect, useMemo, useCallback, useRef, useState } from 'react';
-import Pane, { IPaneConfigs } from './pane';
+import Pane from './pane';
 import Sash from './sash';
 import {
     classNames,
@@ -14,7 +14,7 @@ import {
     sashVerticalClassName,
     assertsSize
 } from './base';
-import { HTMLElementProps, IAxis, ISplitProps } from './types';
+import { IAxis, ISplitProps, IPaneConfigs, ICacheSizes } from './types';
 
 const SplitPane = ({
     children,
@@ -25,14 +25,14 @@ const SplitPane = ({
     sashClassName,
     resizerSize = 4,
     performanceMode = false,
-    onChange = () => null, 
+    onChange = () => null,
     onDragStart = () => null,
     onDragEnd = () => null,
     ...others
 }: ISplitProps) => {
     const axis = useRef<IAxis>({ x: 0, y: 0 });
     const wrapper = useRef<HTMLDivElement>(null);
-    const cacheSizes = useRef(null);
+    const cacheSizes = useRef<ICacheSizes>({ sizes: [], sashPosSizes: [] });
     const [wrapperRect, setWrapperRect] = useState({});
     const [isDragging, setDragging] = useState<boolean>(false);
 
@@ -46,7 +46,7 @@ const SplitPane = ({
         };
     }, []);
 
-    const { 
+    const {
         sizeName,
         splitPos,
         splitAxis
@@ -170,7 +170,7 @@ const SplitPane = ({
                         style={{
                             ...paneProps.style,
                             [sizeName]: paneSizes[childIndex],
-                            [splitPos]: panePoses[childIndex]                            
+                            [splitPos]: panePoses[childIndex]
                         }}
                     >
                         {isPane ? paneProps.children : childNode}

@@ -1,4 +1,4 @@
-import React, { useRef, useState, CSSProperties } from 'react';
+import React, { useRef, useState } from 'react';
 import {
     classNames,
     sashHoverClassName,
@@ -13,7 +13,7 @@ export default function Sash({
     onDragEnd,
     ...others
 }: ISashProps) {
-    const timeout = useRef<NodeJS.Timeout>();
+    const timeout = useRef<number | null>(null);
     const [active, setActive] = useState(false);
     const [draging, setDrag] = useState(false);
 
