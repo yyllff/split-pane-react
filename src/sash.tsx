@@ -4,14 +4,7 @@ import {
     sashHoverClassName,
     sashClassName
 } from './base';
-
-interface ISashProps {
-    className?: string;
-    style: CSSProperties;
-    onDragStart: React.MouseEventHandler<HTMLDivElement>;
-    onDragging: React.MouseEventHandler<HTMLDivElement>;
-    onDragEnd: React.MouseEventHandler<HTMLDivElement>;
-}
+import { ISashProps } from './types';
 
 export default function Sash({
     className,

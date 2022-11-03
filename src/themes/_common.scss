@@ -34,9 +34,6 @@
     }
 
     &--dragging {
-        .react-split__pane {
-            user-select: none;
-        }
         &.react-split--vertical {
             cursor: col-resize;
         }
@@ -44,4 +41,8 @@
             cursor: row-resize;
         }
     }
+}
+
+body.react-split--disabled {
+    user-select: none;
 }
