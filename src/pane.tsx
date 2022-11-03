@@ -9,10 +9,10 @@ export default function Pane({
     title
 }: PropsWithChildren<HTMLElementProps & IPaneConfigs>) {
     return (
-        <div 
-            role={role} 
-            title={title} 
-            className={className} 
+        <div
+            role={role}
+            title={title}
+            className={className}
             style={style}
         >
             {children}
