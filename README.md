@@ -3,8 +3,8 @@
 
 ## Features
 
-- Supports vertical & horizontal layouts.
-- Supports fluid pane.
+- Simple api and support for multiple panels
+- Supports vertical & horizontal layouts and fluid pane.
 - Use controlled component mode, flexible use
 - React16.8 version at least, and React18 version at the same time
 - Built in different themes
