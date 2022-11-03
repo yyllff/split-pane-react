@@ -8,6 +8,7 @@
 - Use controlled component mode, flexible use
 - React16.8 version at least, and React18 version at the same time
 - Built in different themes
+- add chao
 
 ## Installing
 
