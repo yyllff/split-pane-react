@@ -72,8 +72,10 @@ function App () {
 | allowResize | Should allowed to resized | boolean |true |
 | className | split pane custom class name | string |void |
 | sashClassName | split sash custom class name | string |void |
-| paneClassName | split pane custom class name | string |void |
+| performanceMode | High performance mode to avoid excessive pressure on the browser | boolean | false |
 | onChange | Callback of size change | (sizes: number[]) => void |void |
+| onDragStart | This callback is invoked when a drag starts | () => void |void |
+| onDragEnd | This callback is invoked when a drag ends | () => void |void |
 
 ** Pane **
 

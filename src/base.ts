@@ -1,4 +1,3 @@
-
 /**
  * Element names may consist of Latin letters, digits, dashes and underscores.
  * CSS class is formed as block name plus two underscores plus element name: .block__elem
@@ -25,6 +24,7 @@ export const splitDragClassName = getBEMModifier(splitClassName, 'dragging');
 export const splitVerticalClassName = getBEMModifier(splitClassName, 'vertical');
 export const splitHorizontalClassName = getBEMModifier(splitClassName, 'horizontal');
 
+export const bodyDisableUserSelect = getBEMModifier(splitClassName, 'disabled');
 export const paneClassName = getBEMElement(splitClassName, 'pane');
 export const sashClassName = getBEMElement(splitClassName, 'sash');
 
@@ -64,4 +64,25 @@ export function classNames(...args) {
         }
     }
     return classList.join(' ');
+}
+
+/**
+ * Convert size to absolute number or Infinity
+ * SplitPane allows sizes in string and number, but the state sizes only support number,
+ * so convert string and number to number in here
+ * 'auto' -> divide the remaining space equally
+ * 'xxxpx' -> xxx
+ * 'xxx%' -> wrapper.size * xxx/100
+ *  xxx -> xxx
+ */
+export function assertsSize (
+    size: string | number | undefined,
+    sum: number,
+    defaultValue = Infinity
+) {
+    if (typeof size === 'undefined') return defaultValue;
+    if (typeof size === 'number') return size;
+    if (size.endsWith('%')) return sum * (+size.replace('%', '') / 100);
+    if (size.endsWith('px')) return +size.replace('px', '');
+    return defaultValue;
 }

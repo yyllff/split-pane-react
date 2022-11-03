@@ -1,113 +1,44 @@
-import React, { ReactNode, useEffect, useMemo, useCallback, useRef, useState } from 'react';
-import { Children, cloneElement, isValidElement } from 'react';
+import React, { useEffect, useMemo, useCallback, useRef, useState } from 'react';
 import Pane, { IPaneConfigs } from './pane';
 import Sash from './sash';
 import {
     classNames,
-    paneClassName as paneItemClassName,
+    bodyDisableUserSelect,
+    paneClassName,
     splitClassName,
     splitDragClassName,
     splitVerticalClassName,
     splitHorizontalClassName,
     sashDisabledClassName,
     sashHorizontalClassName,
-    sashVerticalClassName
+    sashVerticalClassName,
+    assertsSize
 } from './base';
-
-interface HTMLElementProps {
-    title?: string;
-    style?: React.CSSProperties;
-    className?: string;
-    role?: string;
-}
-
-interface IAxis {
-    x: number;
-    y: number;
-}
-
-/**
- * Clone react children props
- * @param children React.ReactNode
- * @param props Parent props
- */
-function cloneReactChildren<P>(
-    children: React.ReactNode,
-    props: P
-): React.ReactNode {
-    return Children.map(children, (child) => {
-        if (isValidElement(child)) {
-            return cloneElement(child, props);
-        }
-        return child;
-    });
-}
-
-export interface ISplitProps extends HTMLElementProps {
-    children: JSX.Element[];
-    /**
-     * Should allowed to resized
-     *
-     * default is true
-     */
-    allowResize?: boolean;
-    /**
-     * How to split the space
-     *
-     * default is vertical
-     */
-    split?: 'vertical' | 'horizontal';
-    /**
-     * Only support controlled mode, so it's required
-     */
-    sizes: (string | number)[];
-    onChange: (sizes: number[]) => void;
-    className?: string;
-    sashClassName?: string;
-    paneClassName?: string;
-    /**
-     * Specify the size fo resizer
-     *
-     * defualt size is 4px
-     */
-    resizerSize?: number;
-}
-
-/**
- * Convert size to absolute number or Infinity
- */
-const assertsSize = function (
-    size: string | number | undefined,
-    sum: number,
-    defaultValue = Infinity
-) {
-    if (typeof size === 'undefined') return defaultValue;
-    if (typeof size === 'number') return size;
-    if (size.endsWith('%')) return sum * (+size.replace('%', '') / 100);
-    if (size.endsWith('px')) return +size.replace('px', '');
-    return defaultValue;
-};
+import { HTMLElementProps, IAxis, ISplitProps } from './types';
 
 const SplitPane = ({
     children,
     sizes: propSizes,
     allowResize = true,
     split = 'vertical',
-    className,
+    className: wrapClassName,
     sashClassName,
-    paneClassName,
     resizerSize = 4,
-    onChange,
+    performanceMode = false,
+    onChange = () => null, 
+    onDragStart = () => null,
+    onDragEnd = () => null,
     ...others
 }: ISplitProps) => {
     const axis = useRef<IAxis>({ x: 0, y: 0 });
     const wrapper = useRef<HTMLDivElement>(null);
+    const cacheSizes = useRef(null);
     const [wrapperRect, setWrapperRect] = useState({});
-    const [draging, setDrag] = useState(false);
+    const [isDragging, setDragging] = useState<boolean>(false);
 
     useEffect(() => {
         const resizeObserver = new ResizeObserver(() => {
-            setWrapperRect(wrapper.current!.getBoundingClientRect());
+            setWrapperRect(wrapper?.current?.getBoundingClientRect() ?? {});
         });
         resizeObserver.observe(wrapper.current!);
         return () => {
@@ -115,40 +46,29 @@ const SplitPane = ({
         };
     }, []);
 
-    // Get some size infos via split
-    const { sizeName, sPos, sAxis } = useMemo(function () {
-        return {
-            sizeName: split === 'vertical' ? 'width' : 'height',
-            sPos: split === 'vertical' ? 'left' : 'top',
-            sAxis: split === 'vertical' ? 'x' : 'y'
-        };
-    }, [split]);
+    const { 
+        sizeName,
+        splitPos,
+        splitAxis
+    } = useMemo(() => ({
+        sizeName: split === 'vertical' ? 'width' : 'height',
+        splitPos: split === 'vertical' ? 'left' : 'top',
+        splitAxis: split === 'vertical' ? 'x' : 'y'
+    }), [split]);
 
     const wrapSize: number = wrapperRect[sizeName] ?? 0;
 
     // Get limit sizes via children
-    const paneLimitSizes = useMemo(function () {
-        return children.map(childNode => {
-            const limits = [0, Infinity];
-            if (childNode.type === Pane) {
-                const { minSize, maxSize } = childNode.props as IPaneConfigs;
-                limits[0] = assertsSize(minSize, wrapSize, 0);
-                limits[1] = assertsSize(maxSize, wrapSize);
-            }
-            return limits;
-        });
-    }, [children, wrapSize]);
+    const paneLimitSizes = useMemo(() => children.map(childNode => {
+        const limits = [0, Infinity];
+        if (childNode.type === Pane) {
+            const { minSize, maxSize } = childNode.props as IPaneConfigs;
+            limits[0] = assertsSize(minSize, wrapSize, 0);
+            limits[1] = assertsSize(maxSize, wrapSize);
+        }
+        return limits;
+    }), [children, wrapSize]);
 
-    /**
-     * SplitPane allows sizes in string and number, but the state sizes only support number,
-     * so convert string and number to number in here
-     * ```ts
-     * 'auto' -> divide the remaining space equally
-     * 'xxxpx' -> xxx
-     * 'xxx%' -> wrapper.size * xxx/100
-     * xxx -> xxx
-     * ```
-     */
     const sizes = useMemo(function () {
         let count = 0;
         let curSum = 0;
@@ -176,21 +96,29 @@ const SplitPane = ({
         return res;
     }, [...propSizes, children.length, wrapSize]);
 
-    // Gets dragging axis position
-    const sashPosSizes = useMemo(function () {
-        return sizes.reduce(function (a, b) {
-            return [...a, a[a.length - 1] + b];
-        }, [0]);
-    }, [...sizes]);
+    const sashPosSizes = useMemo(() => (
+        sizes.reduce((a, b) => [...a, a[a.length - 1] + b], [0])
+    ), [...sizes]);
 
-    const onDragStart = useCallback(function (e) {
+    const dragStart = useCallback(function (e) {
+        document?.body?.classList?.add(bodyDisableUserSelect);
         axis.current = { x: e.pageX, y: e.pageY };
-        setDrag(true);
-    }, []);
+        cacheSizes.current = { sizes, sashPosSizes };
+        setDragging(true);
+        onDragStart(e);
+    }, [onDragStart, sizes, sashPosSizes]);
+
+    const dragEnd = useCallback(function (e) {
+        document?.body?.classList?.remove(bodyDisableUserSelect);
+        axis.current = { x: e.pageX, y: e.pageY };
+        cacheSizes.current = { sizes, sashPosSizes };
+        setDragging(false);
+        onDragEnd(e);
+    }, [onDragEnd, sizes, sashPosSizes]);
 
     const onDragging = useCallback(function (e, i) {
         const curAxis = { x: e.pageX, y: e.pageY };
-        let distanceX = curAxis[sAxis] - axis.current[sAxis];
+        let distanceX = curAxis[splitAxis] - axis.current[splitAxis];
 
         const leftBorder = -Math.min(
             sizes[i] - paneLimitSizes[i][0],
@@ -215,77 +143,59 @@ const SplitPane = ({
         onChange(nextSizes);
     }, [paneLimitSizes, onChange]);
 
+    const paneFollow = !(performanceMode && isDragging);
+    const paneSizes = paneFollow ? sizes : cacheSizes.current.sizes;
+    const panePoses = paneFollow ? sashPosSizes:  cacheSizes.current.sashPosSizes;
+
     return (
         <div
             className={classNames(
                 splitClassName,
-                draging && splitDragClassName,
                 split === 'vertical' && splitVerticalClassName,
                 split === 'horizontal' && splitHorizontalClassName,
-                className
+                isDragging && splitDragClassName,
+                wrapClassName
             )}
             ref={wrapper}
             {...others}
         >
             {children.map((childNode, childIndex) => {
-                const paneClasses = classNames(
-                    paneItemClassName,
-                    paneClassName
-                );
-                const paneStyle = {
-                    [sizeName]: sizes[childIndex],
-                    [sPos]: sashPosSizes[childIndex]
-                };
-
-                let sashChild: ReactNode = null;
-                if (childIndex > 0) {
-                    sashChild = (
-                        <Sash
-                            className={classNames(
-                                !allowResize && sashDisabledClassName,
-                                split === 'vertical'
-                                    ? sashVerticalClassName
-                                    : sashHorizontalClassName,
-                                sashClassName
-                            )}
-                            style={{
-                                [sizeName]: resizerSize,
-                                [sPos]: sashPosSizes[childIndex] - resizerSize / 2
-                            }}
-                            onDragStart={onDragStart}
-                            onDragging={e => onDragging(e, childIndex - 1)}
-                            onDragEnd={() => {
-                                setDrag(false);
-                            }}
-                        />
-                    );
-                }
-
-                if (childNode.type === Pane) {
-                    const { className = '', style = {} } = childNode.props;
-                    return (
-                        <React.Fragment key={childIndex}>
-                            {sashChild}
-                            {cloneReactChildren(childNode, {
-                                className: classNames(paneClasses, className),
-                                style: { ...style, ...paneStyle }
-                            })}
-                        </React.Fragment>
-                    );
-                }
+                const isPane = childNode.type === Pane;
+                const paneProps = isPane ? childNode.props : {};
 
                 return (
-                    <React.Fragment key={childIndex}>
-                        {sashChild}
-                        <Pane
-                            className={paneClasses}
-                            style={paneStyle}
-                        >
-                            {childNode}
-                        </Pane>
-                    </React.Fragment>
+                    <Pane
+                        key={childIndex}
+                        className={classNames(paneClassName, paneProps.className)}
+                        style={{
+                            ...paneProps.style,
+                            [sizeName]: paneSizes[childIndex],
+                            [splitPos]: panePoses[childIndex]                            
+                        }}
+                    >
+                        {isPane ? paneProps.children : childNode}
+                    </Pane>
                 );
             })}
+            {sashPosSizes.slice(1, -1).map((posSize, index) => (
+                <Sash
+                    key={index}
+                    className={classNames(
+                        !allowResize && sashDisabledClassName,
+                        split === 'vertical'
+                            ? sashVerticalClassName
+                            : sashHorizontalClassName,
+                        sashClassName
+                    )}
+                    style={{
+                        [sizeName]: resizerSize,
+                        [splitPos]: posSize- resizerSize / 2
+                    }}
+                    onDragStart={dragStart}
+                    onDragging={e => onDragging(e, index)}
+                    onDragEnd={dragEnd}
+                />
+            ))}
         </div>
     );
 };
