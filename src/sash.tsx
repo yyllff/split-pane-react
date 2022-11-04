@@ -1,13 +1,10 @@
 import React, { useRef, useState } from 'react';
-import {
-    classNames,
-    sashHoverClassName,
-    sashClassName
-} from './base';
+import { classNames, sashClassName } from './base';
 import { ISashProps } from './types';
 
 export default function Sash({
     className,
+    render,
     onDragStart,
     onDragging,
     onDragEnd,
@@ -33,7 +30,6 @@ export default function Sash({
             role="Resizer"
             className={classNames(
                 sashClassName,
-                (draging || active) && sashHoverClassName,
                 className
             )}
             onMouseEnter={() => {
@@ -55,6 +51,8 @@ export default function Sash({
                 window.addEventListener('mouseup', handleMouseUp);
             }}
             {...others}
-        />
+        >
+            {render(draging || active)}
+        </div>
     );
 }

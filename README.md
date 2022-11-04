@@ -72,7 +72,7 @@ function App () {
 | resizerSize | Specify the size for resizer | number |4 |
 | allowResize | Should allowed to resized | boolean |true |
 | className | split pane custom class name | string |void |
-| sashClassName | split sash custom class name | string |void |
+| sashRender | User defined sliding axis function | (index: number, active: boolean) => void |void |
 | performanceMode | High performance mode to avoid excessive pressure on the browser | boolean | false |
 | onChange | Callback of size change | (sizes: number[]) => void |void |
 | onDragStart | This callback is invoked when a drag starts | () => void |void |
@@ -88,24 +88,10 @@ function App () {
 
 ## themes
 
-Three different theme styles are built into this component:
+You can use the sashRender parameter to configure the theme you need:
 
-* The default theme style refers to vscode style,The reference path is as follows:
-
-````js
-import 'split-pane-react/esm/themes/default.css';
-````
-* The style1 theme style refers to sublime style,The reference path is as follows:
-
-````js
-import 'split-pane-react/esm/themes/theme1.css';
-````
-* The style 2 theme has a permanent axis,The reference path is as follows:
-
-````js
-import 'split-pane-react/esm/themes/theme2.css';
-````
-
+* The default theme style refers to vscode style
+* At the same time, we have built in a theme similar to sublime
 
 
 ## License

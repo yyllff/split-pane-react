@@ -1,6 +1,7 @@
 import React, { useEffect, useMemo, useCallback, useRef, useState } from 'react';
 import Pane from './pane';
 import Sash from './sash';
+import SashContent from './SashContent';
 import {
     classNames,
     bodyDisableUserSelect,
@@ -22,7 +23,7 @@ const SplitPane = ({
     allowResize = true,
     split = 'vertical',
     className: wrapClassName,
-    sashClassName,
+    sashRender = (_, active) => <SashContent active={active} type='vscode' />,
     resizerSize = 4,
     performanceMode = false,
     onChange = () => null,
@@ -184,13 +185,13 @@ const SplitPane = ({
                         !allowResize && sashDisabledClassName,
                         split === 'vertical'
                             ? sashVerticalClassName
-                            : sashHorizontalClassName,
-                        sashClassName
+                            : sashHorizontalClassName
                     )}
                     style={{
                         [sizeName]: resizerSize,
                         [splitPos]: posSize- resizerSize / 2
                     }}
+                    render={sashRender.bind(null, index)}
                     onDragStart={dragStart}
                     onDragging={e => onDragging(e, index)}
                     onDragEnd={dragEnd}

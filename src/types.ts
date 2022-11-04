@@ -35,6 +35,7 @@ export interface ISplitProps extends HTMLElementProps {
      * Only support controlled mode, so it's required
      */
     sizes: (string | number)[];
+    sashRender: (index: number, active: boolean) => React.ReactNode;
     onChange: (sizes: number[]) => void;
     onDragStart?: (e: MouseEvent) => void;
     onDragEnd?: (e: MouseEvent) => void;
@@ -52,9 +53,17 @@ export interface ISplitProps extends HTMLElementProps {
 export interface ISashProps {
     className?: string;
     style: React.CSSProperties;
+    render: (active: boolean) => void;
     onDragStart: React.MouseEventHandler<HTMLDivElement>;
     onDragging: React.MouseEventHandler<HTMLDivElement>;
     onDragEnd: React.MouseEventHandler<HTMLDivElement>;
+}
+
+export interface ISashContentProps {
+    className?: string;
+    type?: string;
+    active?: boolean;
+    children?: JSX.Element[];
 }
 
 export interface IPaneConfigs {
