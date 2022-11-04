@@ -58,22 +58,9 @@ const SplitPane = ({
 
     const wrapSize: number = wrapperRect[sizeName] ?? 0;
 
-    // the function to get real Panel no matter it is HOC or not
-    const getPanelNodeFunc = (node)=>{
-      if (node.type === Pane) {
-        return node
-      }
-      // this time type can be HOC, so we need to call it
-      if(typeof node.type != 'string'){
-        return node.type(node.props)
-      }
-      return node
-    }
-
     // Get limit sizes via children
     const paneLimitSizes = useMemo(() => children.map(childNode => {
         const limits = [0, Infinity];
-        childNode = getPanelNodeFunc(childNode)
         if (childNode.type === Pane) {
             const { minSize, maxSize } = childNode.props as IPaneConfigs;
             limits[0] = assertsSize(minSize, wrapSize, 0);
@@ -172,21 +159,24 @@ const SplitPane = ({
             ref={wrapper}
             {...others}
         >
-          {children.map((childNode, childIndex)=>{
-            const paneProps =  childNode.props
-            // we don't really care why it is made of Panel Component ,every element can be used
-            let panelNode = getPanelNodeFunc(childNode)
-            // we use created element to make HOC worked, it only care about the element type
-            return  React.createElement(panelNode.type, {
-              key:childIndex,
-              className:classNames(paneClassName, paneProps.className),
-              style:{
-                ...paneProps.style,
-                [sizeName]: paneSizes[childIndex],
-                [splitPos]: panePoses[childIndex]
-              },
-            }, paneProps.children)
-          })}
+            {children.map((childNode, childIndex) => {
+                const isPane = childNode.type === Pane;
+                const paneProps = isPane ? childNode.props : {};
+
+                return (
+                    <Pane
+                        key={childIndex}
+                        className={classNames(paneClassName, paneProps.className)}
+                        style={{
+                            ...paneProps.style,
+                            [sizeName]: paneSizes[childIndex],
+                            [splitPos]: panePoses[childIndex]
+                        }}
+                    >
+                        {isPane ? paneProps.children : childNode}
+                    </Pane>
+                );
+            })}
             {sashPosSizes.slice(1, -1).map((posSize, index) => (
                 <Sash
                     key={index}
