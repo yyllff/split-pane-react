@@ -1,5 +1,5 @@
 # split-pane-react
-> Resizable split panes for [React.js](http://reactjs.org).Check out the [live demo](https://yyllff.github.io/split-pane-react/).
+> Resizable split panes for [React.js](http://reactjs.org).Check out the [live demo](https://yyllff.github.io/split-pane-react/). Different [themes](https://codesandbox.io/s/split-pane-themes-xmsqtt).
 
 ## Features
 
@@ -90,8 +90,9 @@ function App () {
 
 You can use the sashRender parameter to configure the theme you need:
 
-* The default theme style refers to vscode style
-* At the same time, we have built in a theme similar to sublime
+- The default theme style refers to vscode style
+- At the same time, we have built in a theme similar to sublime
+- Other demo [themes](https://codesandbox.io/s/split-pane-themes-xmsqtt).
 
 
 ## License
