@@ -27,15 +27,18 @@ import React, { useState } from 'react';
 import SplitPane, { Pane } from 'split-pane-react';
 import 'split-pane-react/esm/themes/default.css';
 
-function App () {
-  const [sizes, setSizes] = useState([100, '30%', 'auto']);
-
-  const layoutCSS = {
+function style (color) {
+  return {
     height: '100%',
     display: 'flex',
     alignItems: 'center',
-    justifyContent: 'center'
+    justifyContent: 'center',
+    backgroundColor: color
   };
+}
+
+function App () {
+  const [sizes, setSizes] = useState([100, '30%', 'auto']);
 
   return (
     <div style={{ height: 500 }}>
@@ -45,14 +48,14 @@ function App () {
         onChange={setSizes}
       >
         <Pane minSize={50} maxSize='50%'>
-          <div style={{ ...layoutCSS, background: '#ddd' }}>
+          <div style={style('#ddd')}>
             pane1
           </div>
         </Pane>
-        <div style={{ ...layoutCSS, background: '#d5d7d9' }}>
+        <div style={style('#ccc')}>
           pane2
         </div>
-        <div style={{ ...layoutCSS, background: '#a1a5a9' }}>
+        <div style={style('#eee')}>
           pane3
         </div>
       </SplitPane>
