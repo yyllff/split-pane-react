@@ -3,11 +3,11 @@
 
 ## Features
 
-- 💪Simple api and support for multiple panels
-- 🔥Supports vertical & horizontal layouts and fluid pane.
-- 🎉Use controlled component mode, flexible use
-- 😎React16.8 version at least, and React18 version at the same time
-- 👷‍♂️Built in different themes
+- 💪**Simple api** and support for multiple panels.
+- 🔥Supports **vertical & horizontal layouts** and **fluid pane**.
+- 🎉Use **controlled component** mode, flexible use.
+- 😎**React16.8** version at least, and **React18** version at the same time.
+- 👷‍♂️Support flexible and convenient **customization of sash**.
 
 
 ## Installing
@@ -102,4 +102,4 @@ You can use the sashRender parameter to configure the theme you need:
 
 **[split-pane-react](https://github.com/yyllff/split-pane-react)** licensed under [MIT](LICENSE).
 
-> PS: I would love to know if you're using split-pane-react. If you have any use problems, you can raise the issue, and I will repair them as soon as possible. This project will be maintained for a long time. If you have a good idea, you can propose a merge.
+> PS: I would love to know if you're using split-pane-react. If you have any use problems, you can raise the issue, and I will repair them as soon as possible. The project will always be maintained. If you have a good idea, you can propose a merge. **If this component helps you, please leave your star. Those who need it will be very grateful.**
