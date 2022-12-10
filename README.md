@@ -69,7 +69,7 @@ function App () {
 
 ## props
 
-** SplitPane **
+**SplitPane**
 
 |    Property    |    Description   |   Type     |  Default     |
 | -------------- | ---------------- | :--------: | :----------: |
@@ -84,7 +84,7 @@ function App () {
 | onDragStart | This callback is invoked when a drag starts | () => void |void |
 | onDragEnd | This callback is invoked when a drag ends | () => void |void |
 
-** Pane **
+**Pane**
 
 |    Property    |    Description   |  Type  | Default |
 | ------------------ | ---------------- | :--------: | ------------------ |
