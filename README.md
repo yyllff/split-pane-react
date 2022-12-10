@@ -1,3 +1,6 @@
+
+[中文](/docs/中文文档.md)
+
 # split-pane-react
 > Resizable split panes for [React.js](http://reactjs.org).Check out the [live demo](https://yyllff.github.io/split-pane-react/). Different [themes](https://codesandbox.io/s/split-pane-themes-xmsqtt).
 
