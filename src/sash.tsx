@@ -10,7 +10,7 @@ export default function Sash({
     onDragEnd,
     ...others
 }: ISashProps) {
-    const timeout = useRef<number | null>(null);
+    const timeout = useRef<NodeJS.Timeout | null>(null);
     const [active, setActive] = useState(false);
     const [draging, setDrag] = useState(false);
 
