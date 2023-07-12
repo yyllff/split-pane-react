@@ -86,3 +86,14 @@ export function assertsSize (
     if (size.endsWith('px')) return +size.replace('px', '');
     return defaultValue;
 }
+
+export function invertSize(
+  currentSize: string | number | undefined,
+  nextSize: number,
+  sum: number
+) {
+  if (currentSize == "auto") return "auto";
+  if (!isFinite(nextSize)) return nextSize;
+  if (typeof currentSize == "string" && currentSize.endsWith("%")) return (nextSize / sum) * 100 + "%";
+  return nextSize;
+}

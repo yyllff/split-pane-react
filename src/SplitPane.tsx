@@ -13,7 +13,8 @@ import {
     sashDisabledClassName,
     sashHorizontalClassName,
     sashVerticalClassName,
-    assertsSize
+    assertsSize,
+    invertSize
 } from './base';
 import { IAxis, ISplitProps, IPaneConfigs, ICacheSizes } from './types';
 
@@ -137,9 +138,14 @@ const SplitPane = ({
             distanceX = rightBorder;
         }
 
-        const nextSizes = [...sizes];
-        nextSizes[i] += distanceX;
-        nextSizes[i + 1] -= distanceX;
+        const nextSizes: (string | number)[] = [...propSizes];
+
+        nextSizes[i] = invertSize(propSizes[i], sizes[i] + distanceX, wrapSize);
+        nextSizes[i + 1] = invertSize(
+          propSizes[i + 1],
+          sizes[i + 1] - distanceX,
+          wrapSize
+        );
 
         onChange(nextSizes);
     }, [paneLimitSizes, onChange]);

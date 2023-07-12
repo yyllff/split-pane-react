@@ -36,7 +36,7 @@ export interface ISplitProps extends HTMLElementProps {
      */
     sizes: (string | number)[];
     sashRender: (index: number, active: boolean) => React.ReactNode;
-    onChange: (sizes: number[]) => void;
+    onChange: (sizes: (string | number)[]) => void;
     onDragStart?: (e: MouseEvent) => void;
     onDragEnd?: (e: MouseEvent) => void;
     className?: string;
@@ -45,7 +45,7 @@ export interface ISplitProps extends HTMLElementProps {
     /**
      * Specify the size fo resizer
      *
-     * defualt size is 4px
+     * default size is 4px
      */
     resizerSize?: number;
 }
